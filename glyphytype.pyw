@@ -15,6 +15,16 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
 
+from utility_toolbar import UtilityToolbar
+
+
+class Container(QWidget):
+    def __init__(self, parent=None):
+        super(Container, self).__init__(parent)
+
+        self.container = QVBoxLayout()
+
+
 class GlyphyApp(QMainWindow):
     '''Top-level Application for GlyphyType app'''
     def __init__(self, parent=None):
@@ -31,6 +41,9 @@ class GlyphyApp(QMainWindow):
         # Build the Main toolbar
         self.buildMainToolbar()
 
+        # Build the main container  
+        self.container = Container()
+
         # Build the Utility Toolbar
         self.buildUtilityToolbar()
 
@@ -39,6 +52,10 @@ class GlyphyApp(QMainWindow):
 
         # Build the Navigation Toolbar
         self.buildNavigationToolbar()
+
+        # Set the layout
+        self.container.setLayout(self.container.container)
+        self.setCentralWidget(self.container)
 
     def buildMainToolbar(self):
         '''Constructs the main app toolbar (File, Edit, Help, etc.)'''
@@ -97,7 +114,8 @@ class GlyphyApp(QMainWindow):
 
     def buildUtilityToolbar(self):
         '''Constructs the Utility Toolbar with drawing tools, etc.'''
-        pass
+        self.utilityToolbar = UtilityToolbar()
+        self.container.container.addWidget(self.utilityToolbar)
 
     def buildCanvas(self):
         '''Constructs the drawing canvas for the user to draw glyphs on.'''
