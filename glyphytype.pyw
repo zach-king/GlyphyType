@@ -42,7 +42,16 @@ class GlyphyApp(QMainWindow):
 
     def buildMainToolbar(self):
         '''Constructs the main app toolbar (File, Edit, Help, etc.)'''
-        pass
+        self.mainMenuBar = self.menuBar()
+        self.fileMenu = QMenu('&File')
+        self.fileMenu.addAction('&New Font', self.newFont, 'Ctrl+N')
+        self.fileMenu.addAction('&New Glyph', self.newGlyph, 'Ctrl+Shift+N')
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction('&Import Font', self.importFont, 'Ctrl+O')
+        self.fileMenu.addAction('&Export Font', self.exportFont, 'Ctrl+S')
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction('E&xit', self.quit, 'Ctrl+Q')
+        self.mainMenuBar.addMenu(self.fileMenu)
 
     def buildUtilityToolbar(self):
         '''Constructs the Utility Toolbar with drawing tools, etc.'''
@@ -55,6 +64,25 @@ class GlyphyApp(QMainWindow):
     def buildNavigationToolbar(self):
         '''Constructs the Navigation Toolbar for the user
         to move to next/previous glyphs, and show/hide reference.'''
+        pass
+
+    def newFont(self):
+        '''Menu command for constructing a new font.'''
+        pass
+
+    def newGlyph(self):
+        '''Menu command for constructing a new individual glyph.'''
+        pass
+
+    def importFont(self):
+        '''Menu command for importing a GlyphyType font.'''
+        pass
+
+    def exportFont(self):
+        '''Menu command for exporting a GlyphyType font.'''
+        pass
+
+    def quit(self):
         pass
 
 
