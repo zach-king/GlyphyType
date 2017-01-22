@@ -16,6 +16,8 @@ from PyQt4.QtGui import *
 import sys
 
 from utility_toolbar import UtilityToolbar
+from navigation_toolbar import NavigationToolbar
+from canvas import Canvas
 
 
 class Container(QWidget):
@@ -34,6 +36,8 @@ class GlyphyApp(QMainWindow):
         self.appTitle = 'GlyphyType'
 
         # Build the UI
+        self.setWindowTitle(self.appTitle)
+        self.setGeometry(100, 100, 1200, 900)
         self.buildWidgets()
 
     def buildWidgets(self):
@@ -119,12 +123,15 @@ class GlyphyApp(QMainWindow):
 
     def buildCanvas(self):
         '''Constructs the drawing canvas for the user to draw glyphs on.'''
-        pass
+        self.canvas = Canvas(self)
+        self.canvas.setFixedSize(1180, 700)
+        self.container.container.addWidget(self.canvas)
 
     def buildNavigationToolbar(self):
         '''Constructs the Navigation Toolbar for the user
         to move to next/previous glyphs, and show/hide reference.'''
-        pass
+        self.navigationToolbar = NavigationToolbar()
+        self.container.container.addWidget(self.navigationToolbar)
 
     def newFont(self):
         '''Menu command for constructing a new font.'''
