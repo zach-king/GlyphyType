@@ -14,6 +14,7 @@ from PyQt4.QtGui import *
 class UtilityToolbar(QFrame):
     def __init__(self, parent=None):
         super(UtilityToolbar, self).__init__(parent)
+        self.app = parent
 
         # Build the tool buttons
         self.buildWidgets()
@@ -21,7 +22,9 @@ class UtilityToolbar(QFrame):
     def buildWidgets(self):
         # Create the Push Buttons
         self.brushButton = QPushButton('Brush')
+        self.brushButton.clicked.connect(self.app.selectBrushTool)
         self.lineButton = QPushButton('Line')
+        self.lineButton.clicked.connect(self.app.selectLineTool)
         self.shapeButton = QPushButton('Shape')
         self.eraserButton = QPushButton('Eraser')
         self.toggleReferenceButton = QPushButton('Toggle Reference')

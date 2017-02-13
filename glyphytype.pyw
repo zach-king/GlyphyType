@@ -18,6 +18,7 @@ import sys
 from utility_toolbar import UtilityToolbar
 from navigation_toolbar import NavigationToolbar
 from canvas import Canvas
+from tools import line, brush
 
 
 class Container(QWidget):
@@ -118,7 +119,7 @@ class GlyphyApp(QMainWindow):
 
     def buildUtilityToolbar(self):
         '''Constructs the Utility Toolbar with drawing tools, etc.'''
-        self.utilityToolbar = UtilityToolbar()
+        self.utilityToolbar = UtilityToolbar(self) # must pass self to bind buttons to selectTool methods   
         self.container.container.addWidget(self.utilityToolbar)
 
     def buildCanvas(self):
@@ -176,15 +177,15 @@ class GlyphyApp(QMainWindow):
 
     def clearCanvas(self):
         '''Completely clears the canvas.'''
-        pass
+        self.canvas.clearCanvas()
 
     def selectBrushTool(self):
         '''Sets the current tool to brush tool'''
-        pass
+        self.canvas.currentTool = brush.Brush(self.canvas)
 
     def selectLineTool(self):
         '''Sets the current tool to line tool.'''
-        pass
+        self.canvas.currentTool = line.Line(self.canvas)
 
     def selectEllipseTool(self):
         '''Sets the current tool to the ellipse tool.'''
