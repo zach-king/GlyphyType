@@ -152,7 +152,7 @@ class GlyphyApp(QMainWindow):
 
     def quit(self):
         '''Exits the application.'''
-        pass
+        exit()
 
     def undo(self):
         '''Undoes the last stored action from the program history.'''
