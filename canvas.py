@@ -19,8 +19,7 @@ class Canvas(QWidget):
         self.isDrawing = False
         self.penWidth = 1
         self.penColor = Qt.black
-        # self.currentTool = brush.Brush(self)
-        self.currentTool = line.Line(self)
+        self.currentTool = brush.Brush(self)
         imageSize = QSize(500, 500)
         self.image = QImage(imageSize, QImage.Format_RGB32)
         self.lastPoint = QPoint()
