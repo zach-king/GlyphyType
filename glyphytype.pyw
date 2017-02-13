@@ -37,7 +37,7 @@ class GlyphyApp(QMainWindow):
 
         # Build the UI
         self.setWindowTitle(self.appTitle)
-        self.setGeometry(100, 100, 1200, 900)
+        self.setGeometry(100, 100, 1200, 800)
         self.buildWidgets()
 
     def buildWidgets(self):
@@ -124,7 +124,8 @@ class GlyphyApp(QMainWindow):
     def buildCanvas(self):
         '''Constructs the drawing canvas for the user to draw glyphs on.'''
         self.canvas = Canvas(self)
-        self.canvas.setFixedSize(1180, 700)
+        self.canvas.clearImage()
+        self.canvas.setFixedSize(1180, 600)
         self.container.container.addWidget(self.canvas)
 
     def buildNavigationToolbar(self):
