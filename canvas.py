@@ -52,6 +52,8 @@ from PyQt4.QtGui import *
     
 #         self.lastPoint = QPoint(endPoint)
 
+from tools import brush
+
 class Canvas(QWidget):
     def __init__(self, parent=None):
         super(Canvas, self).__init__(parent)
@@ -61,6 +63,7 @@ class Canvas(QWidget):
         self.isDrawing = False
         self.penWidth = 1
         self.penColor = Qt.black
+        self.currentTool = brush.Brush(self)
         imageSize = QSize(500, 500)
         self.image = QImage(imageSize, QImage.Format_RGB32)
         self.lastPoint = QPoint()
@@ -106,18 +109,13 @@ class Canvas(QWidget):
 #       print("self.image.size() = %s" % self.image.size())
 #       print("self.size() = %s" % self.size())
 #       print("event.pos() = %s" % event.pos())
-        if event.button() == Qt.LeftButton:
-            self.lastPoint = event.pos()
-            self.isDrawing = True
+        self.currentTool.mousePress(event)
 
     def mouseMoveEvent(self, event):
-        if (event.buttons() & Qt.LeftButton) and self.isDrawing:
-            self.drawLineTo(event.pos())
+        self.currentTool.mouseMove(event)
 
     def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton and self.isDrawing:
-            self.drawLineTo(event.pos())
-            self.isDrawing = False
+        self.currentTool.mouseRelease(event)
 
     def paintEvent(self, event):
         painter = QPainter(self)
