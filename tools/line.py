@@ -18,6 +18,7 @@ from PyQt4.QtCore import *
 class Line(tool.Tool):
     def __init__(self, canv):
         super(Line, self).__init__(canv)
+        self.origin = None
         self.startPoint = None
         self.stopPoint = None
 
@@ -26,6 +27,9 @@ class Line(tool.Tool):
             # Check if started yet
             if self.startPoint == None:
                 # Start new line segment
+                if self.origin == None:
+                    self.origin = event.pos()
+
                 self.startPoint = event.pos()
                 self.canvas.lastPoint = event.pos()
                 self.canvas.isDrawing = True
@@ -38,14 +42,11 @@ class Line(tool.Tool):
                 # These lines make it so the line doesn't 
                 # stay connected all the time (you make a new 
                 # start and stop point each time)
-                self.canvas.lastPoint = None
-                self.startPoint = None
-
-    # def mouseRelease(self, event):
-    #     if event.button() == Qt.LeftButton and self.canvas.isDrawing:
-    #         self.canvas.drawLineTo(event.pos())
-    #         self.canvas.isDrawing = False
-
-    # def mouseMove(self, event):
-    #     if (event.buttons() & Qt.LeftButton) and self.canvas.isDrawing:
-    #         self.canvas.drawLineTo(event.pos())
+                # self.canvas.lastPoint = None
+                # self.startPoint = None
+        elif event.button() == Qt.RightButton and self.origin != None:
+            self.canvas.drawLineTo(self.origin)
+            self.canvas.isDrawing = False
+            self.canvas.lastPoint = None
+            self.startPoint = None
+            self.origin = None

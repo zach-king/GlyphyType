@@ -1,1 +1,1 @@
-__all__ = ['tool', 'brush', 'line']
+__all__ = ['tool', 'brush', 'line', 'rectangle']

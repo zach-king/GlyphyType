@@ -18,7 +18,7 @@ import sys
 from utility_toolbar import UtilityToolbar
 from navigation_toolbar import NavigationToolbar
 from canvas import Canvas
-from tools import line, brush
+from tools import line, brush, rectangle
 
 
 class Container(QWidget):
@@ -193,7 +193,7 @@ class GlyphyApp(QMainWindow):
 
     def selectRectangleTool(self):
         '''Sets the current tool to the rectangle tool.'''
-        pass
+        self.canvas.currentTool = rectangle.Rectangle(self.canvas)
 
     def selectTriangleTool(self):
         '''Sets the current tool to the triangle tool.'''

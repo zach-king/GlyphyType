@@ -113,6 +113,15 @@ class Canvas(QWidget):
         self.update()
         self.lastPoint = QPoint(endPoint)
 
+    def drawRectangle(self, origin, width, height):
+        painter = QPainter(self.image)
+        painter.setPen(QPen(self.penColor, self.penWidth,
+            Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        painter.drawRect(QRect(origin, QSize(width, height)))
+        self.modified = True
+
+        self.update()
+
     def resizeImage(self, image, newSize):
         if image.size() == newSize:
             return
