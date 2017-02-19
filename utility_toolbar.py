@@ -32,6 +32,7 @@ class UtilityToolbar(QFrame):
         self.fillButton = QPushButton('Color Fill')
         self.exportButton = QPushButton('Export')
         self.clearButton = QPushButton('CLEAR ALL')
+        self.clearButton.clicked.connect(self.app.clearCanvas)
 
         # Add the buttons to a layout for self
         buttonLayout = QHBoxLayout()

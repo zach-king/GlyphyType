@@ -24,6 +24,8 @@ class Canvas(QWidget):
         self.image = QImage(imageSize, QImage.Format_RGB32)
         self.lastPoint = QPoint()
 
+        self.painter = QPainter()
+
     def openImage(self, fileName):
         loadedImage = QImage()
         if not loadedImage.load(fileName):
@@ -61,10 +63,6 @@ class Canvas(QWidget):
 
     def clearCanvas(self):
         self.clearImage()
-        
-        # Clear Glyph storage/record here too...
-
-        # Use painter to "clear" the canvas
 
     def mousePressEvent(self, event):
 #       print("self.image.width() = %d" % self.image.width())
@@ -81,8 +79,9 @@ class Canvas(QWidget):
         self.currentTool.mouseRelease(event)
 
     def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.drawImage(event.rect(), self.image)
+        self.painter.begin(self)
+        self.painter.drawImage(event.rect(), self.image)
+        self.painter.end()
 
     def resizeEvent(self, event):
 #       print "resize event"
@@ -102,25 +101,27 @@ class Canvas(QWidget):
         super(Canvas, self).resizeEvent(event)
 
     def drawLineTo(self, endPoint):
-        painter = QPainter(self.image)
-        painter.setPen(QPen(self.penColor, self.penWidth,
+        self.painter.begin(self.image)
+        self.painter.setPen(QPen(self.penColor, self.penWidth,
             Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-        painter.drawLine(self.lastPoint, endPoint)
+        self.painter.drawLine(self.lastPoint, endPoint)
         self.modified = True
 
         # rad = self.penWidth / 2 + 2
         # self.update(QRect(self.lastPoint, endPoint).normalized().adjusted(-rad, -rad, +rad, +rad))
         self.update()
         self.lastPoint = QPoint(endPoint)
+        self.painter.end()
 
     def drawRectangle(self, origin, width, height):
-        painter = QPainter(self.image)
-        painter.setPen(QPen(self.penColor, self.penWidth,
+        self.painter.begin(self.image)
+        self.painter.setPen(QPen(self.penColor, self.penWidth,
             Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-        painter.drawRect(QRect(origin, QSize(width, height)))
+        self.painter.drawRect(QRect(origin, QSize(width, height)))
         self.modified = True
 
         self.update()
+        self.painter.end()
 
     def resizeImage(self, image, newSize):
         if image.size() == newSize:
