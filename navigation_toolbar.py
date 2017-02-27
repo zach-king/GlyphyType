@@ -20,12 +20,18 @@ class NavigationToolbar(QFrame):
 
     def buildWidgets(self):
         # Create the Push Buttons
-        self.prevButton = QPushButton('Prev')
+        self.prevButton = QToolButton()
         self.prevButton.setIcon(QIcon('./config/icons/prev-icon.png'))
+        self.prevButton.setText('Prev')
+        self.prevButton.setFixedWidth(400)
+        self.prevButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.currentGlyphDisplay = QLabel('Current Glyph')
         self.currentGlyphDisplay.setAlignment(Qt.AlignCenter)
-        self.nextButton = QPushButton('Next')
+        self.nextButton = QToolButton()
+        self.nextButton.setText('Next')
+        self.nextButton.setFixedWidth(400)
         self.nextButton.setIcon(QIcon('./config/icons/next-icon.png'))
+        self.nextButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         # Add the buttons to a layout for self
         layout = QHBoxLayout()
