@@ -22,16 +22,20 @@ class UtilityToolbar(QFrame):
     def buildWidgets(self):
         # Create the Push Buttons
         self.brushButton = QPushButton('Brush')
+        self.brushButton.setIcon(QIcon('./config/icons/brush-icon.png'))
         self.brushButton.clicked.connect(self.app.selectBrushTool)
         self.lineButton = QPushButton('Line')
+        self.lineButton.setIcon(QIcon('./config/icons/line-icon.png'))
         self.lineButton.clicked.connect(self.app.selectLineTool)
         self.rectangleButton = QPushButton('Rectangle')
+        self.rectangleButton.setIcon(QIcon('./config/icons/rectangle-icon.png'))
         self.rectangleButton.clicked.connect(self.app.selectRectangleTool)
         self.eraserButton = QPushButton('Eraser')
         self.toggleReferenceButton = QPushButton('Toggle Reference')
         self.fillButton = QPushButton('Color Fill')
         self.exportButton = QPushButton('Export')
         self.clearButton = QPushButton('CLEAR ALL')
+        self.clearButton.setIcon(QIcon('./config/icons/clear-icon.png'))
         self.clearButton.clicked.connect(self.app.clearCanvas)
 
         # Add the buttons to a layout for self

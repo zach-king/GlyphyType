@@ -39,11 +39,6 @@ class Line(tool.Tool):
                 self.canvas.isDrawing = False
                 self.canvas.drawLineTo(event.pos())
 
-                # These lines make it so the line doesn't 
-                # stay connected all the time (you make a new 
-                # start and stop point each time)
-                # self.canvas.lastPoint = None
-                # self.startPoint = None
         elif event.button() == Qt.RightButton and self.origin != None:
             self.canvas.drawLineTo(self.origin)
             self.canvas.isDrawing = False

@@ -17,7 +17,7 @@ class Canvas(QWidget):
         self.setAttribute(Qt.WA_StaticContents)
         self.modified = False
         self.isDrawing = False
-        self.penWidth = 1
+        self.penWidth = 3
         self.penColor = Qt.black
         self.currentTool = brush.Brush(self)
         imageSize = QSize(500, 500)
@@ -122,6 +122,12 @@ class Canvas(QWidget):
 
         self.update()
         self.painter.end()
+
+    def drawTriangle(self, origin, base_width, height):
+        self.painter.begin(self.image)
+        self.painter.setPen(QPen(self.penColor, self.penWidth,
+            Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        self.modified = True
 
     def resizeImage(self, image, newSize):
         if image.size() == newSize:
