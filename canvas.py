@@ -23,6 +23,7 @@ class Canvas(QWidget):
         imageSize = QSize(500, 500)
         self.image = QImage(imageSize, QImage.Format_RGB32)
         self.lastPoint = QPoint()
+        self.paths = []
 
         self.painter = QPainter()
 
@@ -84,20 +85,7 @@ class Canvas(QWidget):
         self.painter.end()
 
     def resizeEvent(self, event):
-#       print "resize event"
-#       print "event = %s" % event
-#       print "event.oldSize() = %s" % event.oldSize()
-#       print "event.size() = %s" % event.size()
-
         self.resizeImage(self.image, event.size())
-
-#       if self.width() > self.image.width() or self.height() > self.image.height():
-#           newWidth = max(self.width() + 128, self.image.width())
-#           newHeight = max(self.height() + 128, self.image.height())
-#           print "newWidth = %d, newHeight = %d" % (newWidth, newHeight)
-#           self.resizeImage(self.image, QSize(newWidth, newHeight))
-#           self.update()
-
         super(Canvas, self).resizeEvent(event)
 
     def drawLineTo(self, endPoint):
@@ -107,8 +95,6 @@ class Canvas(QWidget):
         self.painter.drawLine(self.lastPoint, endPoint)
         self.modified = True
 
-        # rad = self.penWidth / 2 + 2
-        # self.update(QRect(self.lastPoint, endPoint).normalized().adjusted(-rad, -rad, +rad, +rad))
         self.update()
         self.lastPoint = QPoint(endPoint)
         self.painter.end()
@@ -129,33 +115,20 @@ class Canvas(QWidget):
             Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
         self.modified = True
 
+    def addPath(self, list_of_vertices):
+        self.paths.append(list_of_vertices)
+        with open('./data/sample-vertices.dat', 'a') as fout:
+            fout.write(str(list_of_vertices) + '\n')
+
     def resizeImage(self, image, newSize):
         if image.size() == newSize:
             return
 
-#       print "image.size() = %s" % repr(image.size())
-#       print "newSize = %s" % newSize
-
-# this resizes the canvas without resampling the image
+        # this resizes the canvas without resampling the image
         newImage = QImage(newSize, QImage.Format_RGB32)
         newImage.fill(qRgb(255, 255, 255))
         painter = QPainter(newImage)
         painter.drawImage(QPoint(0, 0), image)
-
-
-##  this resampled the image but it gets messed up with so many events...       
-##      painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
-##      painter.setRenderHint(QPainter.HighQualityAntialiasing, True)
-#       
-#       newImage = QImage(newSize, QImage.Format_RGB32)
-#       newImage.fill(qRgb(255, 255, 255))
-#       painter = QPainter(newImage)
-#       srcRect = QRect(QPoint(0,0), image.size())
-#       dstRect = QRect(QPoint(0,0), newSize)
-##      print "srcRect = %s" % srcRect
-##      print "dstRect = %s" % dstRect
-#       painter.drawImage(dstRect, image, srcRect)
-
 
         self.image = newImage
 

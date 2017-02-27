@@ -24,6 +24,9 @@ class Line(tool.Tool):
 
     def mousePress(self, event):
         if event.button() == Qt.LeftButton:
+            # Add the point to vertices
+            self.vertices.append((event.pos().x(), event.pos().y()))
+
             # Check if started yet
             if self.startPoint == None:
                 # Start new line segment
@@ -45,3 +48,4 @@ class Line(tool.Tool):
             self.canvas.lastPoint = None
             self.startPoint = None
             self.origin = None
+            self.canvas.addPath(self.vertices)

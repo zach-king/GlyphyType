@@ -11,6 +11,7 @@ Description:
 class Tool(object):
     def __init__(self, canv):
         self.canvas = canv
+        self.vertices = []
 
     def mousePress(self, event):
         pass
