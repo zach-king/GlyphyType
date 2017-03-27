@@ -64,6 +64,7 @@ class Canvas(QWidget):
 
     def clearCanvas(self):
         self.clearImage()
+        self.paths = []
 
     def mousePressEvent(self, event):
 #       print("self.image.width() = %d" % self.image.width())

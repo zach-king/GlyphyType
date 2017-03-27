@@ -15,6 +15,8 @@ class NavigationToolbar(QFrame):
     def __init__(self, parent=None):
         super(NavigationToolbar, self).__init__(parent)
 
+        self.app = parent
+
         # Build the tool buttons
         self.buildWidgets()
 
@@ -33,6 +35,10 @@ class NavigationToolbar(QFrame):
         self.nextButton.setIcon(QIcon('./config/icons/next-icon.png'))
         self.nextButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
+        # Bind prev/next buttons
+        self.prevButton.clicked.connect(self.app.prevGlyph)
+        self.nextButton.clicked.connect(self.app.nextGlyph)
+
         # Add the buttons to a layout for self
         layout = QHBoxLayout()
         layout.addWidget(self.prevButton)
@@ -41,3 +47,6 @@ class NavigationToolbar(QFrame):
 
         # Set the layout
         self.setLayout(layout)
+
+    def setCurrentGlyphDisplay(self, glyph='A'):
+        self.currentGlyphDisplay.setText(glyph)

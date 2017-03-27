@@ -36,6 +36,13 @@ class GlyphyApp(QMainWindow):
         # Application metadata
         self.appTitle = 'GlyphyType'
 
+        # Glyph data
+        self.glyphPaths = dict()
+        self.currentGlyph = 'A'
+        self.currentGlyphIndex = 0
+        self.glyphList = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+=[]{};:\'",.<>/?\|`~'
+        self.MAX_GLYPH_INDEX = len(self.glyphList) - 1
+
         # Build the UI
         self.setWindowTitle(self.appTitle)
         self.setGeometry(100, 100, 1200, 800)
@@ -61,6 +68,10 @@ class GlyphyApp(QMainWindow):
         # Set the layout
         self.container.setLayout(self.container.container)
         self.setCentralWidget(self.container)
+
+        # Set initial glyph
+        self.currentGlyph = self.glyphList[self.currentGlyphIndex]
+        self.navigationToolbar.setCurrentGlyphDisplay(self.currentGlyph)
 
     def buildMainToolbar(self):
         '''Constructs the main app toolbar (File, Edit, Help, etc.)'''
@@ -132,7 +143,7 @@ class GlyphyApp(QMainWindow):
     def buildNavigationToolbar(self):
         '''Constructs the Navigation Toolbar for the user
         to move to next/previous glyphs, and show/hide reference.'''
-        self.navigationToolbar = NavigationToolbar()
+        self.navigationToolbar = NavigationToolbar(self)
         self.container.container.addWidget(self.navigationToolbar)
 
     def newFont(self):
@@ -226,6 +237,46 @@ class GlyphyApp(QMainWindow):
     def showSource(self):
         '''Brings up the GitHub repo in browser.'''
         pass
+
+    def prevGlyph(self):
+        '''Go to the previous glyph in the series.'''
+        # Switch to previous glyph and display it (tries to at least)
+        if (self.currentGlyphIndex > 0):
+            # Serialize the current glyph points
+            paths = self.canvas.paths
+            self.glyphPaths[self.currentGlyph] = paths
+            self.serializeGlyph()
+
+            # Clear the canvas
+            self.clearCanvas()
+
+            self.currentGlyph = self.glyphList[self.currentGlyphIndex - 1]
+            self.currentGlyphIndex -= 1
+            self.navigationToolbar.setCurrentGlyphDisplay(self.currentGlyph)
+            print('previous')
+
+    def nextGlyph(self):
+        '''Go to the next glyph in the series.'''
+        # Switch to previous glyph and display it (tries to at least)
+        if (self.currentGlyphIndex < self.MAX_GLYPH_INDEX):
+            # Serialize the current glyph points
+            paths = self.canvas.paths
+            self.glyphPaths[self.currentGlyph] = paths
+            self.serializeGlyph()
+
+            # Clear the canvas
+            self.clearCanvas()
+
+            self.currentGlyph = self.glyphList[self.currentGlyphIndex + 1]
+            self.currentGlyphIndex += 1
+            self.navigationToolbar.setCurrentGlyphDisplay(self.currentGlyph)
+            print('next')
+
+    def serializeGlyph(self):
+        '''Serializes current glyph's paths to file.'''
+        with open('./data/sample-font/' + str(self.currentGlyph) + '.dat', 'w') as fout:
+            for path in self.glyphPaths[self.currentGlyph]:
+                fout.write(str(path) + '\n')
 
 
 
