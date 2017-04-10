@@ -24,6 +24,7 @@ class Canvas(QWidget):
         self.image = QImage(imageSize, QImage.Format_RGB32)
         self.lastPoint = QPoint()
         self.paths = []
+        self.parent = parent
 
         self.painter = QPainter()
 
@@ -118,8 +119,8 @@ class Canvas(QWidget):
 
     def addPath(self, list_of_vertices):
         self.paths.append(list_of_vertices)
-        with open('./data/sample-vertices.dat', 'a') as fout:
-            fout.write(str(list_of_vertices) + '\n')
+        # with open('./data/sample-vertices.dat', 'a') as fout:
+        #     fout.write(str(list_of_vertices) + '\n')
 
     def resizeImage(self, image, newSize):
         if image.size() == newSize:

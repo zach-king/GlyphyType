@@ -14,10 +14,10 @@ class Tool(object):
         self.vertices = []
 
     def mousePress(self, event):
-        pass
+        self.canvas.parent.hasSaved = False
     
     def mouseRelease(self, event):
-        pass
+        self.canvas.parent.hasSaved = False
 
     def mouseMove(self, event):
         pass

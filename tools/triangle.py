@@ -25,12 +25,14 @@ class Triangle(tool.Tool):
         self.height = 0
 
     def mousePress(self, event):
+        super(Triangle, self).mouseMove(event)
         if event.button() == Qt.LeftButton:
             self.startPoint = event.pos()
             self.stopPoint = event.pos()
             self.canvas.isDrawing = True
 
     def mouseRelease(self, event):
+        super(Triangle, self).mouseMove(event)
         if event.button() == Qt.LeftButton and self.canvas.isDrawing:
             self.canvas.isDrawing = False
             self.calculateVertices()
@@ -41,6 +43,7 @@ class Triangle(tool.Tool):
             self.height = 0
 
     def mouseMove(self, event):
+        super(Triangle, self).mouseMove(event)
         if (event.buttons() & Qt.LeftButton) and self.canvas.isDrawing:
             self.stopPoint = event.pos()
 

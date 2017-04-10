@@ -20,15 +20,18 @@ class Brush(tool.Tool):
         super(Brush, self).__init__(canv)
 
     def mousePress(self, event):
+        super(Brush, self).mousePress(event)
         if event.button() == Qt.LeftButton:
             self.canvas.lastPoint = event.pos()
             self.canvas.isDrawing = True
 
     def mouseRelease(self, event):
+        super(Brush, self).mouseRelease(event)
         if event.button() == Qt.LeftButton and self.canvas.isDrawing:
             self.canvas.drawLineTo(event.pos())
             self.canvas.isDrawing = False
 
     def mouseMove(self, event):
+        super(Brush, self).mouseMove(event)
         if (event.buttons() & Qt.LeftButton) and self.canvas.isDrawing:
             self.canvas.drawLineTo(event.pos())

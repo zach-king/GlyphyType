@@ -23,6 +23,7 @@ class Line(tool.Tool):
         self.stopPoint = None
 
     def mousePress(self, event):
+        super(Line, self).mouseMove(event)
         if event.button() == Qt.LeftButton:
             # Add the point to vertices
             self.vertices.append((event.pos().x(), event.pos().y()))
