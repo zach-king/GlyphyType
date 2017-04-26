@@ -14,6 +14,7 @@ Description:
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys, webbrowser
+import pickle
 
 from utility_toolbar import UtilityToolbar
 from navigation_toolbar import NavigationToolbar
@@ -37,7 +38,7 @@ class GlyphyApp(QMainWindow):
         self.appTitle = 'GlyphyType'
 
         # Glyph data
-        self.glyphList = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+=[]{};:\'",.<>/?\|`~'
+        self.glyphList = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
         self.glyphPaths = dict()
         self.initializeGlyphPaths()
         self.currentGlyph = 'A'
@@ -153,7 +154,7 @@ class GlyphyApp(QMainWindow):
     def newFont(self):
         '''Menu command for constructing a new font.'''
         # Get the filename for the user's new font
-        newfile = QFileDialog.getSaveFileName(self, 'New Font', filter='.gtfo')
+        newfile = QFileDialog.getSaveFileName(self, 'New Font', filter='*.gtfo')
         if not newfile:
             return # User cancelled
 
@@ -168,7 +169,7 @@ class GlyphyApp(QMainWindow):
         '''Saves font data to currentFontFile.'''
         # Check for existing font file name
         if not self.currentFontFile:
-            self.currentFontFile = QFileDialog.getSaveFileName(self, 'Save Font', filter='.gtfo')
+            self.currentFontFile = QFileDialog.getSaveFileName(self, 'Save Font', filter='*.gtfo')
             if not self.currentFontFile:
                 return
 
@@ -181,7 +182,7 @@ class GlyphyApp(QMainWindow):
     def saveFontAs(self):
         '''Save As dialog for saving currentFontFile.'''
         # Get new filename
-        self.currentFontFile = QFileDialog.getSaveFileName(self, 'Save Font', filter='.gtfo')
+        self.currentFontFile = QFileDialog.getSaveFileName(self, 'Save Font', filter='*.gtfo')
         if not self.currentFontFile:
             return
 
@@ -212,6 +213,9 @@ class GlyphyApp(QMainWindow):
         # Deserialize (parse) font file that was opened
         self.deserializeFont()
 
+        print(self.glyphPaths[0])
+
+
         # Show current font now from new font file that was opened
         self.showCurrentGlyph()
 
@@ -222,10 +226,17 @@ class GlyphyApp(QMainWindow):
         self.clearCanvas()
 
         # Restore any existing canvas paths
-        self.canvas.paths = self.glyphPaths[self.glyphList[self.currentGlyphIndex]]
+        self.canvas.paths = self.glyphPaths[self.currentGlyphIndex]
         
-        # Show current glyph...todo
-        print(self.glyphPaths[self.currentGlyph])
+        # Show current glyph
+        self.navigationToolbar.setCurrentGlyphDisplay(self.currentGlyph)
+
+        if self.canvas.paths != []:
+            self.canvas.DrawPaths()
+
+        print('Current glyph: ' + self.glyphList[self.currentGlyphIndex] + '\n')
+        print(self.glyphPaths[self.currentGlyphIndex])
+        print('\n\n')
 
     def checkSave(self):
         '''Check if user has saved work or not (used before closing, etc.)'''
@@ -337,14 +348,13 @@ class GlyphyApp(QMainWindow):
         if (self.currentGlyphIndex > 0):
             # Serialize the current glyph points
             paths = self.canvas.paths
-            self.glyphPaths[self.currentGlyph] = paths
+            self.glyphPaths[self.currentGlyphIndex] = paths
 
             # Clear the canvas
             self.clearCanvas()
 
             self.currentGlyph = self.glyphList[self.currentGlyphIndex - 1]
             self.currentGlyphIndex -= 1
-            self.navigationToolbar.setCurrentGlyphDisplay(self.currentGlyph)
 
             self.showCurrentGlyph()
 
@@ -354,47 +364,33 @@ class GlyphyApp(QMainWindow):
         if (self.currentGlyphIndex < self.MAX_GLYPH_INDEX):
             # Serialize the current glyph points
             paths = self.canvas.paths
-            self.glyphPaths[self.currentGlyph] = paths
+            self.glyphPaths[self.currentGlyphIndex] = paths
 
             # Clear the canvas
             self.clearCanvas()
 
             self.currentGlyph = self.glyphList[self.currentGlyphIndex + 1]
             self.currentGlyphIndex += 1
-            self.navigationToolbar.setCurrentGlyphDisplay(self.currentGlyph)
 
             self.showCurrentGlyph()
 
     def serializeFont(self):
         '''Serializes current font's paths to file.'''
-        with open(self.currentFontFile, 'w') as fout:
-            for glyph in self.glyphPaths:
-                if self.glyphPaths[glyph] == []:
-                    fout.write('[]\n---\n')
-                    continue
-                for path in self.glyphPaths[glyph]:
-                    fout.write(str(path) + '\n')
-                fout.write('---\n')
+        with open(self.currentFontFile, 'wb') as fout:
+            pickle.dump(self.glyphPaths, fout)
 
     def deserializeFont(self):
         '''Parses current font's paths from file.'''
         self.glyphPaths = dict()
         self.initializeGlyphPaths()
         self.currentGlyphIndex = 0
-        self.currentGlyph = self.glyphList[self.currentGlyphIndex]
-        with open(self.currentFontFile, 'r') as fin:
-            for list_of_paths in fin.read().split('---'):
-                paths = list_of_paths.split('\n')
-                while paths.count('') != 0:
-                    paths.remove('') # Remove blank entries (bug fix)
-                self.glyphPaths[self.glyphList[self.currentGlyphIndex]] = [eval(path) for path in paths]
-                self.currentGlyphIndex += 1
-        self.currentGlyphIndex = 0
+        with open(self.currentFontFile, 'rb') as fin:
+            self.glyphPaths = pickle.load(fin)
 
     def initializeGlyphPaths(self):
         self.glyphPaths = dict()
-        for glyph in self.glyphList:
-            self.glyphPaths[glyph] = list()
+        for index in range(len(self.glyphList)):
+            self.glyphPaths[index] = list()
                 
 
 

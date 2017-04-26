@@ -40,6 +40,12 @@ class Rectangle(tool.Tool):
             self.canvas.isDrawing = False
             self.calculateCorners()
             self.canvas.drawRectangle(self.origin, self.width, self.height)
+            rect = QRect(self.origin, QSize(self.width, self.height))
+            self.vertices.append(rect.topLeft())
+            self.vertices.append(rect.topRight())
+            self.vertices.append(rect.bottomRight())
+            self.vertices.append(rect.bottomLeft())
+            self.canvas.addPath(self.vertices)
             self.startPoint = None
             self.stopPoint = None
             self.width = 0

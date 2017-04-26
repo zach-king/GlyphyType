@@ -101,6 +101,15 @@ class Canvas(QWidget):
         self.lastPoint = QPoint(endPoint)
         self.painter.end()
 
+    def drawLine(self, startPoint, endPoint):
+        self.painter.begin(self.image)
+        self.painter.setPen(QPen(self.penColor, self.penWidth,
+            Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        self.painter.drawLine(startPoint, endPoint)
+        self.modified = True
+        self.update()
+        self.painter.end()
+
     def drawRectangle(self, origin, width, height):
         self.painter.begin(self.image)
         self.painter.setPen(QPen(self.penColor, self.penWidth,
@@ -156,3 +165,19 @@ class Canvas(QWidget):
 
     def penWidth(self):
         return self.penWidth
+
+    def DrawPaths(self):
+        '''Draws the paths stored in self. Only lines currently.'''
+        for path in self.paths:
+            startPoint = self.ParsePoint(path[0])
+            for point in path[1:]:
+                endPoint = self.ParsePoint(point)
+                self.drawLine(startPoint, endPoint)
+                startPoint = endPoint
+
+    def ParsePoint(self, tup):
+        point = QPoint()
+        point.x = tup[0]
+        point.y = tup[1]
+        # print('Point ({}, {})'.format(point.x, point.y))
+        return point
