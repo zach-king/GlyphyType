@@ -41,15 +41,16 @@ class Rectangle(tool.Tool):
             self.calculateCorners()
             self.canvas.drawRectangle(self.origin, self.width, self.height)
             rect = QRect(self.origin, QSize(self.width, self.height))
-            self.vertices.append(rect.topLeft())
-            self.vertices.append(rect.topRight())
-            self.vertices.append(rect.bottomRight())
-            self.vertices.append(rect.bottomLeft())
+            self.vertices.append((rect.topLeft().x(), rect.topLeft().y()))
+            self.vertices.append((rect.topRight().x(), rect.topRight().y()))
+            self.vertices.append((rect.bottomRight().x(), rect.bottomRight().y()))
+            self.vertices.append((rect.bottomLeft().x(), rect.bottomLeft().y()))
             self.canvas.addPath(self.vertices)
             self.startPoint = None
             self.stopPoint = None
             self.width = 0
             self.height = 0
+            self.vertices = []
 
     def mouseMove(self, event):
         super(Rectangle, self).mouseMove(event)

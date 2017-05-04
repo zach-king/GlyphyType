@@ -50,3 +50,4 @@ class Line(tool.Tool):
             self.startPoint = None
             self.origin = None
             self.canvas.addPath(self.vertices)
+            self.vertices = []

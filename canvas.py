@@ -68,11 +68,6 @@ class Canvas(QWidget):
         self.paths = []
 
     def mousePressEvent(self, event):
-#       print("self.image.width() = %d" % self.image.width())
-#       print("self.image.height() = %d" % self.image.height())
-#       print("self.image.size() = %s" % self.image.size())
-#       print("self.size() = %s" % self.size())
-#       print("event.pos() = %s" % event.pos())
         self.currentTool.mousePress(event)
 
     def mouseMoveEvent(self, event):
@@ -128,8 +123,6 @@ class Canvas(QWidget):
 
     def addPath(self, list_of_vertices):
         self.paths.append(list_of_vertices)
-        # with open('./data/sample-vertices.dat', 'a') as fout:
-        #     fout.write(str(list_of_vertices) + '\n')
 
     def resizeImage(self, image, newSize):
         if image.size() == newSize:
@@ -172,6 +165,7 @@ class Canvas(QWidget):
             startPoint = self.ParsePoint(path[0])
             for point in path[1:]:
                 endPoint = self.ParsePoint(point)
+                # print('Drawing segment from ({}, {}) to ({}, {})'.format(startPoint.x, startPoint.y, endPoint.x, endPoint.y))
                 self.drawLine(startPoint, endPoint)
                 startPoint = endPoint
 
@@ -179,5 +173,5 @@ class Canvas(QWidget):
         point = QPoint()
         point.x = tup[0]
         point.y = tup[1]
-        # print('Point ({}, {})'.format(point.x, point.y))
+        # print('Parsed QPoint ({}, {})'.format(point.x, point.y))
         return point

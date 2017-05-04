@@ -16,6 +16,9 @@ from PyQt4.QtGui import *
 import sys, webbrowser
 import pickle
 
+from glyphStruct import Glyph as gData
+from fontTools.ttLib import TTFont
+
 from utility_toolbar import UtilityToolbar
 from navigation_toolbar import NavigationToolbar
 from canvas import Canvas
@@ -38,10 +41,10 @@ class GlyphyApp(QMainWindow):
         self.appTitle = 'GlyphyType'
 
         # Glyph data
-        self.glyphList = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
+        self.glyphList = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~' # don't change this 
         self.glyphPaths = dict()
         self.initializeGlyphPaths()
-        self.currentGlyph = 'A'
+        self.currentGlyph = self.glyphList[0]
         self.currentGlyphIndex = 0
         self.currentFontFile = None
         self.MAX_GLYPH_INDEX = len(self.glyphList) - 1
@@ -89,7 +92,7 @@ class GlyphyApp(QMainWindow):
         self.fileMenu.addAction('Save &As', self.saveFontAs, 'Ctrl+Shift+S')
         self.fileMenu.addSeparator()
         self.fileMenu.addAction('&Import Font', self.importFont, 'Ctrl+O')
-        self.fileMenu.addAction('&Export Font', self.exportFont, 'Ctrl+S')
+        self.fileMenu.addAction('&Export Font', self.exportFont, 'Ctrl+Alt+S')
         self.fileMenu.addSeparator()
         self.fileMenu.addAction('E&xit', self.quit, 'Ctrl+Q')
         self.mainMenuBar.addMenu(self.fileMenu)
@@ -252,7 +255,33 @@ class GlyphyApp(QMainWindow):
 
     def exportFont(self):
         '''Menu command for exporting a GlyphyType font.'''
-        pass
+        self.checkSave()
+
+        glyphList = []
+        for idNum in self.glyphPaths:
+            g = gData(self.glyphPaths[idNum], idNum)
+            g.align()
+            g.scale()
+            glyphList.append(g)
+            # print(g.name)
+
+
+        fontName = self.currentFontFile
+        if self.currentFontFile.endswith('.gtfo'):
+            fontName = fontName.split('.gtfo')[0]
+            
+        with open('emptyGlyphs.xml') as foundation, open(fontName + '.ttx', 'w+') as newTable:
+            for line in foundation:
+                newTable.write(line)
+                for glyph in glyphList:
+                    if ("<TTGlyph name=\"" + str(glyph.name) + "\"") in line:
+                        # print("Writing " + str(glyph.name) + "(" + str(glyph.id) + "): ")
+                        newTable.write(glyph.writeFormat())
+
+        tt = TTFont()
+        tt.importXML(fontName + '.ttx')
+        tt.save(fontName + '.ttf')
+
 
     def quit(self):
         '''Exits the application.'''
