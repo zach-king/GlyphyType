@@ -13,7 +13,7 @@ Description:
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import sys, webbrowser
+import sys, webbrowser, os
 import pickle
 
 from glyphStruct import Glyph as gData
@@ -222,9 +222,6 @@ class GlyphyApp(QMainWindow):
 
     def showCurrentGlyph(self):
         '''Alternative method for showing the current glyph based off the currentFontFile and indices'''
-        # Clear canvas
-        self.clearCanvas()
-
         # Restore any existing canvas paths
         self.canvas.paths = self.glyphPaths[self.currentGlyphIndex]
         
@@ -311,6 +308,7 @@ class GlyphyApp(QMainWindow):
     def clearCanvas(self):
         '''Completely clears the canvas.'''
         self.canvas.clearCanvas()
+        self.glyphPaths[self.currentGlyphIndex] = []
 
     def selectBrushTool(self):
         '''Sets the current tool to brush tool'''
@@ -340,7 +338,7 @@ class GlyphyApp(QMainWindow):
 
     def showTutorial(self):
         '''Brings up tutorial docs in browser.'''
-        pass
+        webbrowser.open('file://' + os.path.realpath('./tutorial.html'))
 
     def showDocumentation(self):
         '''Brings up the documentation docs in browswer.'''
@@ -373,11 +371,13 @@ class GlyphyApp(QMainWindow):
             paths = self.canvas.paths
             self.glyphPaths[self.currentGlyphIndex] = paths
 
-            # Clear the canvas
-            self.clearCanvas()
-
             self.currentGlyph = self.glyphList[self.currentGlyphIndex - 1]
             self.currentGlyphIndex -= 1
+
+            # Clear the canvas
+            paths = self.glyphPaths[self.currentGlyphIndex] # store temporarily
+            self.clearCanvas() # clears paths, but only want to clear screen, so store paths temporarily and then restore...
+            self.glyphPaths[self.currentGlyphIndex] = paths # restore 
 
             self.showCurrentGlyph()
 
@@ -389,11 +389,13 @@ class GlyphyApp(QMainWindow):
             paths = self.canvas.paths
             self.glyphPaths[self.currentGlyphIndex] = paths
 
-            # Clear the canvas
-            self.clearCanvas()
-
             self.currentGlyph = self.glyphList[self.currentGlyphIndex + 1]
             self.currentGlyphIndex += 1
+
+            # Clear the canvas
+            paths = self.glyphPaths[self.currentGlyphIndex] # store temporarily
+            self.clearCanvas() # clears paths, but only want to clear screen, so store paths temporarily and then restore...
+            self.glyphPaths[self.currentGlyphIndex] = paths # restore 
 
             self.showCurrentGlyph()
 

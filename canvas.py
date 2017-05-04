@@ -100,6 +100,7 @@ class Canvas(QWidget):
         self.painter.begin(self.image)
         self.painter.setPen(QPen(self.penColor, self.penWidth,
             Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        print('Drawing segment from ({}, {}) to ({}, {})'.format(startPoint.x, startPoint.y, endPoint.x, endPoint.y))
         self.painter.drawLine(startPoint, endPoint)
         self.modified = True
         self.update()
@@ -161,13 +162,22 @@ class Canvas(QWidget):
 
     def DrawPaths(self):
         '''Draws the paths stored in self. Only lines currently.'''
+        # self.drawLine(QPoint(393, 23), QPoint(691, 23))
+        # self.drawLine(QPoint(691, 23), QPoint(691, 419))
+        # self.drawLine(QPoint(691, 419), QPoint(393, 419))
+        # self.drawLine(QPoint(393, 419), QPoint(393, 23))
+        # self.painter.end()
+        # return
         for path in self.paths:
             startPoint = self.ParsePoint(path[0])
+            origin = startPoint
+            endPoint = None
             for point in path[1:]:
                 endPoint = self.ParsePoint(point)
-                # print('Drawing segment from ({}, {}) to ({}, {})'.format(startPoint.x, startPoint.y, endPoint.x, endPoint.y))
                 self.drawLine(startPoint, endPoint)
                 startPoint = endPoint
+            endPoint = origin
+            self.drawLine(startPoint, endPoint)
 
     def ParsePoint(self, tup):
         point = QPoint()
