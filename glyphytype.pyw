@@ -49,6 +49,7 @@ class GlyphyApp(QMainWindow):
         self.currentFontFile = None
         self.MAX_GLYPH_INDEX = len(self.glyphList) - 1
         self.hasSaved = False
+        self.undoHistory = []
 
         # Build the UI
         self.setWindowTitle(self.appTitle)
@@ -289,11 +290,23 @@ class GlyphyApp(QMainWindow):
 
     def undo(self):
         '''Undoes the last stored action from the program history.'''
-        pass
+        # Pop the last path for the current glyph into history
+        if len(self.canvas.paths) == 0:
+            return # No paths yet, so nothing to undo
+
+        path = self.canvas.paths.pop()
+        self.undoHistory.append(path)
+        self.canvas.DrawPaths()
 
     def redo(self):
         '''Redoes the last stored action from the program history.'''
-        pass
+        # Pop the last path from the undo history into the current glyph paths
+        if len(self.undoHistory) == 0:
+            return # nothing has been undone so far so return
+
+        path = self.undoHistory.pop()
+        self.canvas.paths.append(path)
+        self.canvas.DrawPaths()
 
     def clearCanvas(self):
         '''Completely clears the canvas.'''
