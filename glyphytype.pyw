@@ -102,10 +102,6 @@ class GlyphyApp(QMainWindow):
         self.editMenu.addAction('&Undo', self.undo, 'Ctrl+Z')
         self.editMenu.addAction('&Redo', self.redo, 'Ctrl+Y')
         self.editMenu.addSeparator()
-        self.editMenu.addAction('&Cut', self.cut, 'Ctrl+X')
-        self.editMenu.addAction('C&opy', self.copy, 'Ctrl+C')
-        self.editMenu.addAction('&Paste', self.paste, 'Ctrl+V')
-        self.editMenu.addSeparator()
         self.editMenu.addAction('Clear &All', self.clearCanvas, 'Ctrl+W')
         self.mainMenuBar.addMenu(self.editMenu)
 
@@ -117,9 +113,6 @@ class GlyphyApp(QMainWindow):
         self.toolsMenu.addAction('&Ellipse', self.selectEllipseTool, 'Ctrl+E')
         self.toolsMenu.addAction('&Rectangle', self.selectRectangleTool, 'Ctrl+R')
         self.toolsMenu.addAction('Trian&gle', self.selectTriangleTool, 'Ctrl+T')
-        self.toolsMenu.addSeparator()
-        self.toolsMenu.addAction('Er&aser', self.selectEraserTool, 'Esc')
-        self.toolsMenu.addAction('&Fill Color', self.selectFillTool, 'Ctrl+F')
         self.toolsMenu.addSeparator()
         self.toolsMenu.addAction('Show/&Hide Reference', self.toggleReference, 'Ctrl+/')
         self.mainMenuBar.addMenu(self.toolsMenu)
@@ -174,26 +167,28 @@ class GlyphyApp(QMainWindow):
         if not self.currentFontFile:
             self.currentFontFile = QFileDialog.getSaveFileName(self, 'Save Font', filter='*.gtfo')
             if not self.currentFontFile:
-                return
+                return False
 
         # Write dictionary of paths to file
         self.serializeFont()
 
         # Set saved flag
         self.hasSaved = True
+        return True
 
     def saveFontAs(self):
         '''Save As dialog for saving currentFontFile.'''
         # Get new filename
         self.currentFontFile = QFileDialog.getSaveFileName(self, 'Save Font', filter='*.gtfo')
         if not self.currentFontFile:
-            return
+            return False
 
         # Write dictionary of paths to file
         self.serializeFont()
 
         # Set saved flag
         self.hasSaved = True
+        return True
 
     def importFont(self):
         '''Menu command for importing a GlyphyType font.'''
@@ -204,7 +199,8 @@ class GlyphyApp(QMainWindow):
 
         # Check if need to save existing 
         if self.currentFontFile != None:
-            self.checkSave()
+            if  not self.checkSave():
+                return # Don't continue if didn't save
 
         # Set current font to opened one
         self.currentFontFile = fontfile
@@ -251,11 +247,14 @@ class GlyphyApp(QMainWindow):
 
             if proceed == QMessageBox.No:
                 # Save
-                self.saveFont()
+                return self.saveFont() # True = saved; False = not saved
+            
+            return False
 
     def exportFont(self):
         '''Menu command for exporting a GlyphyType font.'''
-        self.checkSave()
+        if not self.checkSave():
+            return # Do not export if did not save
 
         glyphList = []
         for idNum in self.glyphPaths:
@@ -296,18 +295,6 @@ class GlyphyApp(QMainWindow):
         '''Redoes the last stored action from the program history.'''
         pass
 
-    def cut(self):
-        '''Cuts the selection to the clipboard.'''
-        pass
-
-    def copy(self):
-        '''Copies the selection to the clipboard.'''
-        pass
-
-    def paste(self):
-        '''Pastes the clipboard contents to the canvas.'''
-        pass
-
     def clearCanvas(self):
         '''Completely clears the canvas.'''
         self.canvas.clearCanvas()
@@ -332,13 +319,7 @@ class GlyphyApp(QMainWindow):
         '''Sets the current tool to the triangle tool.'''
         pass
 
-    def selectEraserTool(self):
-        '''Sets the current tool to the eraser tool.'''
-        pass
 
-    def selectFillTool(self):
-        '''Sets the current tool to the color fill tool.'''
-        pass
 
     def toggleReference(self):
         '''Toggles the reference watermark on the canvas for the current glyph.'''
