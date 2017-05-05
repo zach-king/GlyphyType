@@ -213,7 +213,7 @@ class GlyphyApp(QMainWindow):
         # Deserialize (parse) font file that was opened
         self.deserializeFont()
 
-        print(self.glyphPaths[0])
+        # print(self.glyphPaths[0])
 
 
         # Show current font now from new font file that was opened
@@ -231,9 +231,9 @@ class GlyphyApp(QMainWindow):
         if self.canvas.paths != []:
             self.canvas.DrawPaths()
 
-        print('Current glyph: ' + self.glyphList[self.currentGlyphIndex] + '\n')
-        print(self.glyphPaths[self.currentGlyphIndex])
-        print('\n\n')
+        # print('Current glyph: ' + self.glyphList[self.currentGlyphIndex] + '\n')
+        # print(self.glyphPaths[self.currentGlyphIndex])
+        # print('\n\n')
 
     def checkSave(self):
         '''Check if user has saved work or not (used before closing, etc.)'''
@@ -251,9 +251,6 @@ class GlyphyApp(QMainWindow):
 
     def exportFont(self):
         '''Menu command for exporting a GlyphyType font.'''
-        if not self.checkSave():
-            return # Do not export if did not save
-
         glyphList = []
         for idNum in self.glyphPaths:
             g = gData(self.glyphPaths[idNum], idNum)
@@ -262,12 +259,11 @@ class GlyphyApp(QMainWindow):
             glyphList.append(g)
             # print(g.name)
 
-
         fontName = self.currentFontFile
         if self.currentFontFile.endswith('.gtfo'):
             fontName = fontName.split('.gtfo')[0]
             
-        with open('emptyGlyphs.xml') as foundation, open(fontName + '.ttx', 'w+') as newTable:
+        with open('emptyGlyphs.xml') as foundation, open(fontName + '.ttx', 'w') as newTable:
             for line in foundation:
                 newTable.write(line)
                 for glyph in glyphList:
@@ -278,6 +274,9 @@ class GlyphyApp(QMainWindow):
         tt = TTFont()
         tt.importXML(fontName + '.ttx')
         tt.save(fontName + '.ttf')
+
+        # print('Exported successfully')
+        msg = QMessageBox.information(self, 'Success!', 'Your font has been exported successfully.')
 
 
     def quit(self):

@@ -100,7 +100,7 @@ class Canvas(QWidget):
         self.painter.begin(self.image)
         self.painter.setPen(QPen(self.penColor, self.penWidth,
             Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-        print('Drawing segment from ({}, {}) to ({}, {})'.format(startPoint.x, startPoint.y, endPoint.x, endPoint.y))
+        # print('Drawing segment from ({}, {}) to ({}, {})'.format(startPoint.x, startPoint.y, endPoint.x, endPoint.y))
         self.painter.drawLine(startPoint, endPoint)
         self.modified = True
         self.update()

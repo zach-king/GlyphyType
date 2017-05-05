@@ -28,6 +28,7 @@ class NavigationToolbar(QFrame):
         self.prevButton.setFixedWidth(400)
         self.prevButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.currentGlyphDisplay = QLabel('Current Glyph')
+        self.currentGlyphDisplay.setFont(QFont('Arial', 40, 1))
         self.currentGlyphDisplay.setAlignment(Qt.AlignCenter)
         self.nextButton = QToolButton()
         self.nextButton.setText('Next')
